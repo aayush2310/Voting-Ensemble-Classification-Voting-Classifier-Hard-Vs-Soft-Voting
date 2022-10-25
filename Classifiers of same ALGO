@@ -1,0 +1,32 @@
+While doing the training it might be difficult to tune the hyperparameters sometimes and the best accuracy might not be obtained by any particular hyperparameter.
+So we put all the parameters into voting classifier which gives the maximum accuracy.
+
+CLASSIFIERS OF SAME ALGO
+
+from sklearn.svm import SVC
+
+from sklearn.datasets import make_classification
+X,y=make_classification(n_samples=1000,n_features=20,n_informative=15,n_redundant=5,random_state=2)
+
+svm1=SVC(probability=True,kernel='poly',degree=1)
+svm2=SVC(probability=True,kernel='poly',degree=2)
+svm1=SVC(probability=True,kernel='poly',degree=3)
+svm2=SVC(probability=True,kernel='poly',degree=4)
+svm1=SVC(probability=True,kernel='poly',degree=5)
+
+estimators=[('svm1',svm1),('svm2',svm2),('svm3',svm3),('svm4',svm4),('svm5',svm5)]
+
+for estimator in estimators:
+       x=cross_val_score(estimator[1],X,y,cv=10,scoring='accuracy')
+       print(estimator[0],np.round(np.mean(x),2))
+
+
+
+#Now we will put these 5 into a voting classifier
+
+vc1=VotingClassifier(estimators=estimators,voting='soft')
+x=cross_val_score(vc1,X,y,cv=10,scoring='accuracy')
+print(np.round(np.mean(x),2))
+
+#Now the accuracy has increased.So,we can play more than one algos and put them finally into one voting classifier to create a completely new model with increased accuracy.
+
