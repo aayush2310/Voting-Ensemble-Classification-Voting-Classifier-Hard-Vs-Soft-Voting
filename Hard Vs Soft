@@ -1,0 +1,4 @@
+Lets say you have two models m1 and m2 and you are working on binary classification, i.e. the output is either 0 or 1.They work in terms of probabilities.In hard voting we
+count how many have 0 as the max probability and 1,then we find the frequency of the majority and tell whether it is 1 or 0.
+In soft voting,we find the sum of the probabilities of all 1 and 0 and see which is more accordingly giving the final answer.Generally,the result of soft voting is better 
+than hard voting.When we use soft voting,the surface becomes smooth,bcz of which we get better results sometimes.
