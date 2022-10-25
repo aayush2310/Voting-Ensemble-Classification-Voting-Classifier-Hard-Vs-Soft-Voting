@@ -1,0 +1,94 @@
+#This Python 3 environment comes with many helpful analytics libraries installed
+#It is defined bythe kaggle/python Docker image: https://github.com/kaggle/docker-python
+#For example,here's several helpful packages to load
+
+import numpy as np #linear algebra
+import pandas as pd #data processing, CSV file I/O (e.g. pd.read_csv)
+
+#Input data files are available in the read-only "../input/" directory
+#For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
+
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+         print(os.path.join(dirname,filename))
+
+
+df=pd.read_csv('/kaggle/input/iris/Iris.csv')
+
+df.head()
+
+#remove ID col
+df=df.iloc[:,1:]
+
+df.head()
+
+#Label encode Species
+from sklearn.preprocessing import LabelEncoder
+
+encoder=LabelEncoder()
+
+df['Species']=encoder.fit_transform(df['Species'])
+
+df.head()
+
+import seaborn as sns
+sns.pairplot(df,hue='Species')
+
+new_df=df[df['Species'] !=0][['SepalLengthCm','SepalWidthCm','Species']]
+
+new_df.head()
+
+X=df.iloc[:,0:2]
+Y=df.iloc[:,-1]
+
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+
+clf1=LogisticRegression()
+clf2=RandomForestClassifier()
+clf3=KNeighborsClassifier()
+
+estimators=[('lr',clf1),('rf',clf2),('knn',clf3)]
+
+for estimator in estimators:
+     x=cross_val_score(estimator[1],X,y,cv=10,scoring='accuracy')
+     print(estimator[0],np.round(np.mean(x),2))
+     
+     
+from sklearn.ensemble import VotingClassifier
+
+HARD VOTING
+
+vc=VotingClassifier(estimators=estimators,voting='hard')
+x=cross_val_score(vc,X,y,cv=10,scoring='accuracy')
+print(np.round(np.mean(x),2))
+
+
+SOFT VOTING
+
+vc=VotingClassifier(estimators=estimators,voting='soft')
+x=cross_val_score(vc,X,y,cv=10,scoring='accuracy')
+print(np.round(np.mean(x),2))
+
+
+Weighted Voting
+
+#there is a hyperparameter called weights.Normally,every base model gets equal weight but if we want,then we can give different weight to different base models.
+#So the importance of different ML models are different.
+
+for i in range(1,4):
+    for j in range(1,4):
+          for k in range(1,4):
+                vc=VotingClassifier(estimators=estimators,voting='soft',weights=[i,j,k])
+                x=cross_val_score(vc,X,y,cv=10,scoring='accuracy')
+                print("for i={},j={},k={}".format(i,j,k),np.round(np.mean(x).2))
+                
+                
+                
+For different weight distribution,the accuracy is different,out of which we need to select the maximum accuracy one.
+
