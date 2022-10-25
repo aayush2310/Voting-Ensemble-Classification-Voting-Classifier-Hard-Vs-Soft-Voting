@@ -1,0 +1,3 @@
+We have multiple algorithms called as base models.We have a dataset with which all the three are trained.Default voting type is hard.The models will be trained and they 
+will be collectively used to form the classifier.The linear combination of the decision boundary of the 3 algorithms will take place.
+Now,we see that the probability of the 3 algos were say 0.53,0.6 and 0.7,so the new probability of the final ensemble will be more than the maximum.
